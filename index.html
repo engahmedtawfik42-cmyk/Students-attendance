@@ -122,8 +122,18 @@
         <h3>استيراد الطلاب من CSV</h3>
         <p class="muted">يُفضّل أن يحتوي الملف على الأعمدة: <code>code,name,phone,group,fee,notes</code>. يمكن أن تكون العناوين بالعربية أيضًا: كود الطالب، اسم الطالب، الهاتف، المجموعة، الاشتراك، ملاحظات.</p>
         <input id="csvFile" type="file" accept=".csv,text/csv">
-        <div class="form-actions"><button id="importCsvBtn" class="btn primary">استيراد الملف</button><button id="exportStudentsBtn" class="btn secondary">تصدير الطلاب CSV</button><button id="exportAllBtn" class="btn secondary">نسخة بيانات كاملة CSV</button></div>
+        <div class="form-actions"><button id="importCsvBtn" class="btn primary">استيراد الملف</button><button id="downloadCsvTemplate" class="btn secondary">تحميل نموذج CSV جاهز</button><button id="exportStudentsBtn" class="btn secondary">تصدير الطلاب CSV</button><button id="exportAllBtn" class="btn secondary">نسخة بيانات كاملة CSV</button></div><p class="muted">حمّل النموذج، وافتحه في Excel، واستبدل بيانات الأمثلة ببيانات الطلاب، ثم احفظه بصيغة CSV UTF-8 واستورده.</p>
         <div id="csvMessage" class="feedback"></div>
+      </div>
+      <div class="panel warning-panel" id="resetPanel">
+        <h3>تصفير البيانات</h3>
+        <p>استخدم هذه الأدوات بحذر. سيتم تنزيل نسخة احتياطية JSON تلقائيًا قبل الحذف، لكن احتفظ بها في مكان آمن وتأكد من تنزيلها بنجاح.</p>
+        <div class="form-actions">
+          <button id="resetOperationsBtn" class="btn secondary">تصفير الحضور والمدفوعات فقط</button>
+          <button id="resetAllDataBtn" class="btn primary" style="background:#b42332">تصفير كل البيانات</button>
+        </div>
+        <p class="muted">تصفير العمليات يحافظ على الطلاب والمجموعات. تصفير كل البيانات يحذف الطلاب والمجموعات والحضور والمدفوعات من قاعدة Firebase المشتركة لكل الأجهزة.</p>
+        <div id="resetMessage" class="feedback"></div>
       </div>
       <div class="panel warning-panel"><h3>تنبيه مهم للبيانات</h3><p>هذا نموذج أولي يعمل مباشرة من المتصفح باستخدام Firebase REST API. لا تجعل قاعدة البيانات مفتوحة للعامة في الاستخدام الحقيقي؛ اضبط Firebase Authentication وDatabase Rules قبل تخزين بيانات طلاب حقيقية. لا تضع أسرارًا أو مفاتيح إدارية في ملفات الموقع.</p></div>
     </section>
