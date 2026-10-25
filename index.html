@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Student Attendance & Payments System</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <div class="eyebrow">STUDENT MANAGEMENT</div>
+      <h1>نظام الحضور والمدفوعات</h1>
+      <p>إدارة الطلاب والمجموعات والتحصيل من مكان واحد</p>
+    </div>
+    <div class="connection"><span id="connectionDot"></span><span id="connectionText">جارٍ الاتصال...</span></div>
+  </header>
+
+  <nav class="tabs" aria-label="التنقل">
+    <button class="tab active" data-page="dashboard">الرئيسية</button>
+    <button class="tab" data-page="attendance">تسجيل الحضور</button>
+    <button class="tab" data-page="payments">تسجيل الدفع</button>
+    <button class="tab" data-page="students">الطلاب</button>
+    <button class="tab" data-page="groups">المجموعات</button>
+    <button class="tab" data-page="reports">التقارير</button>
+    <button class="tab" data-page="settings">الإعدادات والاستيراد</button>
+  </nav>
+
+  <main>
+    <section class="page active" id="page-dashboard">
+      <div class="section-head"><div><h2>لوحة التحكم</h2><p>ملخص سريع لحالة السنتر اليوم</p></div><button class="btn secondary" id="refreshBtn">تحديث البيانات</button></div>
+      <div class="stats">
+        <article class="stat"><span>إجمالي الطلاب</span><strong id="statStudents">0</strong></article>
+        <article class="stat"><span>حضور اليوم</span><strong id="statAttendance">0</strong></article>
+        <article class="stat"><span>تحصيل اليوم</span><strong id="statTodayMoney">0 ج.م</strong></article>
+        <article class="stat"><span>إجمالي المتبقي</span><strong id="statDue">0 ج.م</strong></article>
+      </div>
+      <div class="grid-two">
+        <article class="panel"><h3>آخر عمليات الحضور</h3><div id="recentAttendance" class="empty">لا توجد عمليات حضور اليوم.</div></article>
+        <article class="panel"><h3>آخر المدفوعات</h3><div id="recentPayments" class="empty">لا توجد مدفوعات مسجلة.</div></article>
+      </div>
+      <div class="notice">مهم: استخدم الإعدادات لإضافة أول مجموعة ثم سجّل الطلاب واربط كل طالب بمجموعته.</div>
+    </section>
+
+    <section class="page" id="page-attendance">
+      <div class="section-head"><div><h2>تسجيل الحضور السريع</h2><p>اكتب كود الطالب واضغط Enter؛ سيُسجّل الحضور فورًا.</p></div></div>
+      <div class="panel quick-panel">
+        <label for="attendanceCode">كود الطالب</label>
+        <div class="quick-row"><input id="attendanceCode" autocomplete="off" placeholder="مثال: BH-1001"><button id="attendanceSubmit" class="btn primary">تسجيل الحضور ↵</button></div>
+        <div id="attendanceMessage" class="feedback" aria-live="polite"></div>
+      </div>
+      <article class="panel"><div class="section-head"><h3>حضور اليوم</h3><span id="attendanceCount" class="pill">0 تسجيل</span></div><div id="attendanceTable"></div></article>
+    </section>
+
+    <section class="page" id="page-payments">
+      <div class="section-head"><div><h2>تسجيل الدفع</h2><p>ابحث بكود الطالب لعرض حسابه وتسجيل دفعة جديدة.</p></div></div>
+      <div class="panel">
+        <label for="paymentCode">كود الطالب</label>
+        <div class="quick-row"><input id="paymentCode" placeholder="اكتب كود الطالب"><button id="findPaymentStudent" class="btn secondary">عرض الحساب</button></div>
+        <div id="paymentStudentCard" class="student-summary hidden"></div>
+        <form id="paymentForm" class="form-grid hidden">
+          <div><label for="paymentAmount">المبلغ المدفوع (ج.م)</label><input id="paymentAmount" type="number" min="0.01" step="0.01" required placeholder="مثال: 500"></div>
+          <div><label for="paymentNote">ملاحظة (اختياري)</label><input id="paymentNote" placeholder="دفعة شهر أكتوبر"></div>
+          <div class="full"><button class="btn primary" type="submit">تأكيد تسجيل الدفع</button></div>
+        </form>
+        <div id="paymentMessage" class="feedback" aria-live="polite"></div>
+      </div>
+      <article class="panel"><h3>سجل المدفوعات</h3><div id="paymentsTable"></div></article>
+    </section>
+
+    <section class="page" id="page-students">
+      <div class="section-head"><div><h2>إدارة الطلاب</h2><p>إضافة الطلاب وتعديل بياناتهم الأساسية.</p></div><button id="newStudentBtn" class="btn primary">+ إضافة طالب</button></div>
+      <div id="studentFormPanel" class="panel hidden">
+        <h3 id="studentFormTitle">إضافة طالب</h3>
+        <form id="studentForm" class="form-grid">
+          <div><label for="studentCode">كود الطالب *</label><input id="studentCode" required placeholder="BH-1001"></div>
+          <div><label for="studentName">اسم الطالب *</label><input id="studentName" required placeholder="الاسم بالكامل"></div>
+          <div><label for="studentPhone">رقم ولي الأمر</label><input id="studentPhone" inputmode="tel" placeholder="01xxxxxxxxx"></div>
+          <div><label for="studentGroup">المجموعة</label><select id="studentGroup"><option value="">بدون مجموعة</option></select></div>
+          <div><label for="studentFee">قيمة الاشتراك (ج.م)</label><input id="studentFee" type="number" min="0" step="0.01" value="0"></div>
+          <div><label for="studentNotes">ملاحظات</label><input id="studentNotes" placeholder="ملاحظات اختيارية"></div>
+          <div class="full form-actions"><button class="btn primary" type="submit">حفظ الطالب</button><button class="btn secondary" type="button" id="cancelStudentBtn">إلغاء</button></div>
+        </form>
+      </div>
+      <div class="panel"><div class="filters"><input id="studentSearch" placeholder="بحث بالكود أو الاسم أو رقم الهاتف"><select id="studentGroupFilter"><option value="">كل المجموعات</option></select></div><div id="studentsTable"></div></div>
+    </section>
+
+    <section class="page" id="page-groups">
+      <div class="section-head"><div><h2>إدارة المجموعات</h2><p>اسم المجموعة والمدرس والموعد وسعر الاشتراك.</p></div><button id="newGroupBtn" class="btn primary">+ إضافة مجموعة</button></div>
+      <div id="groupFormPanel" class="panel hidden">
+        <h3 id="groupFormTitle">إضافة مجموعة</h3>
+        <form id="groupForm" class="form-grid">
+          <div><label for="groupName">اسم المجموعة *</label><input id="groupName" required placeholder="مثال: روبوتكس السبت"></div>
+          <div><label for="groupTeacher">اسم المدرس</label><input id="groupTeacher" placeholder="اسم المدرس"></div>
+          <div><label for="groupSchedule">الموعد</label><input id="groupSchedule" placeholder="السبت 5 مساءً"></div>
+          <div><label for="groupFee">سعر الاشتراك (ج.م)</label><input id="groupFee" type="number" min="0" step="0.01" value="0"></div>
+          <div class="full form-actions"><button class="btn primary" type="submit">حفظ المجموعة</button><button class="btn secondary" type="button" id="cancelGroupBtn">إلغاء</button></div>
+        </form>
+      </div>
+      <div class="panel"><div id="groupsTable"></div></div>
+    </section>
+
+    <section class="page" id="page-reports">
+      <div class="section-head"><div><h2>التقارير</h2><p>راجع الحضور والتحصيل والمتأخرات خلال فترة محددة.</p></div></div>
+      <div class="panel">
+        <div class="filters"><div><label for="reportFrom">من تاريخ</label><input id="reportFrom" type="date"></div><div><label for="reportTo">إلى تاريخ</label><input id="reportTo" type="date"></div><button id="runReportBtn" class="btn primary">عرض التقرير</button><button id="exportReportBtn" class="btn secondary">تصدير CSV</button></div>
+        <div class="stats report-stats"><article class="stat"><span>الحضور خلال الفترة</span><strong id="reportAttendance">0</strong></article><article class="stat"><span>التحصيل خلال الفترة</span><strong id="reportCollected">0 ج.م</strong></article><article class="stat"><span>عدد الطلاب عليهم متبقي</span><strong id="reportDebtors">0</strong></article><article class="stat"><span>إجمالي المتبقي</span><strong id="reportDue">0 ج.م</strong></article></div>
+        <h3>ملخص الطلاب والمديونيات</h3><div id="debtorsTable"></div>
+      </div>
+    </section>
+
+    <section class="page" id="page-settings">
+      <div class="section-head"><div><h2>الإعدادات والاستيراد</h2><p>إعداد اتصال Firebase واستيراد بيانات الطلاب من CSV.</p></div></div>
+      <div class="panel">
+        <h3>اتصال قاعدة البيانات</h3>
+        <p class="muted">رابط قاعدة البيانات الافتراضي مضبوط مسبقًا. إذا كانت القواعد تتطلب تسجيل دخول أو صلاحيات، ستحتاج إلى ضبطها في Firebase Console.</p>
+        <label for="firebaseUrl">Firebase Realtime Database URL</label><input id="firebaseUrl" value="https://corse-c943d-default-rtdb.firebaseio.com/">
+        <div class="form-actions"><button id="saveFirebaseUrl" class="btn primary">حفظ الرابط</button><button id="testFirebase" class="btn secondary">اختبار الاتصال</button></div>
+        <div id="firebaseMessage" class="feedback"></div>
+      </div>
+      <div class="panel">
+        <h3>استيراد الطلاب من CSV</h3>
+        <p class="muted">يُفضّل أن يحتوي الملف على الأعمدة: <code>code,name,phone,group,fee,notes</code>. يمكن أن تكون العناوين بالعربية أيضًا: كود الطالب، اسم الطالب، الهاتف، المجموعة، الاشتراك، ملاحظات.</p>
+        <input id="csvFile" type="file" accept=".csv,text/csv">
+        <div class="form-actions"><button id="importCsvBtn" class="btn primary">استيراد الملف</button><button id="exportStudentsBtn" class="btn secondary">تصدير الطلاب CSV</button><button id="exportAllBtn" class="btn secondary">نسخة بيانات كاملة CSV</button></div>
+        <div id="csvMessage" class="feedback"></div>
+      </div>
+      <div class="panel warning-panel"><h3>تنبيه مهم للبيانات</h3><p>هذا نموذج أولي يعمل مباشرة من المتصفح باستخدام Firebase REST API. لا تجعل قاعدة البيانات مفتوحة للعامة في الاستخدام الحقيقي؛ اضبط Firebase Authentication وDatabase Rules قبل تخزين بيانات طلاب حقيقية. لا تضع أسرارًا أو مفاتيح إدارية في ملفات الموقع.</p></div>
+    </section>
+  </main>
+  <footer>Student Attendance & Payments System <span>•</span> نسخة أولية بدون Node.js</footer>
+  <script src="app.js"></script>
+</body>
+</html>
