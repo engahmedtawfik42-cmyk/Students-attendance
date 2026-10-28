@@ -121,7 +121,7 @@
       <div class="panel">
         <h3>استيراد الطلاب من CSV</h3>
         <p class="muted">يُفضّل أن يحتوي الملف على الأعمدة: <code>code,name,phone,group,fee,notes</code>. يمكن أن تكون العناوين بالعربية أيضًا: كود الطالب، اسم الطالب، الهاتف، المجموعة، الاشتراك، ملاحظات.</p>
-        <input id="csvFile" type="file" accept=".csv,text/csv">
+        <input id="csvFile" type="file" accept=".csv,.xlsx,.xls,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel">
         <div class="form-actions"><button id="importCsvBtn" class="btn primary">استيراد الملف</button><button id="downloadCsvTemplate" class="btn secondary">تحميل نموذج CSV جاهز</button><button id="exportStudentsBtn" class="btn secondary">تصدير الطلاب CSV</button><button id="exportAllBtn" class="btn secondary">نسخة بيانات كاملة CSV</button></div><p class="muted">حمّل النموذج، وافتحه في Excel، واستبدل بيانات الأمثلة ببيانات الطلاب، ثم احفظه بصيغة CSV UTF-8 واستورده.</p>
         <div id="csvMessage" class="feedback"></div>
       </div>
@@ -139,6 +139,7 @@
     </section>
   </main>
   <footer>Student Attendance & Payments System <span>•</span> نسخة أولية بدون Node.js</footer>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
